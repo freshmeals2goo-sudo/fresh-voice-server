@@ -1,0 +1,35 @@
+import express from "express";
+import bodyParser from "body-parser";
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// Endpoint Twilio will call
+app.post("/twilio-voice", (req, res) => {
+  const twiml = `<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Say voice="woman">
+    Hi, thank you for calling Fresh and Tasty Meals in Canton, Georgia.
+    We specialize in weekly meal prep, catering, and corporate meals.
+    Please leave your name, phone number, and what you are calling about,
+    and our team will call you back shortly.
+  </Say>
+  <Record maxLength="120" playBeep="true" />
+  <Say>
+    Thank you. Goodbye.
+  </Say>
+</Response>`;
+
+  res.type("text/xml");
+  res.send(twiml);
+});
+
+app.get("/", (req, res) => {
+  res.send("Fresh & Tasty voice server is running.");
+});
+
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
+});
